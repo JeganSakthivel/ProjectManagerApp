@@ -1,0 +1,136 @@
+<h4 class="page-header">View Tasks</h4>
+<div class="form-group row">
+  <label class="col-12 col-sm-2 control-label">Project:</label>
+  <div class="col-12 col-sm-4 input-group">
+    <input type="text" class="form-control" [(ngModel)]="Project" readonly />  
+  </div>      
+      <button type="button" class="col-sm-2 btn btn-info" (click)=searchProjectPopup()>Search</button>    
+</div>
+<div class="col-12 col-sm-8">
+  <label>Sort by:</label>
+  <button type="button" class="btn btn-link" (click)="sortBy('startDate')">Start Date</button>
+  |<button type="button" class="btn btn-link" (click)="sortBy('endDate')">End Date</button>
+  |<button type="button" class="btn btn-link" (click)="sortBy('priority')">Priority</button>
+  |<button type="button" class="btn btn-link" (click)="sortBy('status')">Completed</button>
+</div>
+<br />
+<div class="list-group" *ngFor="let task of Tasks | filter: searchText | orderby: field : order">
+  <div class="list-group-item">
+    <div class="row">
+      <div class="col-12 col-sm-6">
+        <div class="row">
+            <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Task: </label> {{ task.taskName }}
+            </div>
+          </div>
+        
+            
+        <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Parent Task: </label> {{ task.parentTaskObject?.parentTaskName }}
+            </div>
+          </div>
+        
+      
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Start Date: </label> {{ task.startDate | date: "dd-MM-yyyy" }}
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>End Date: </label> {{ task.endDate | date: "dd-MM-yyyy" }}
+            </div>
+          </div>
+        
+        
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Priority: </label> {{ task.priority }}
+            </div>
+          </div>
+      
+    </div>
+    </div>
+    <div class="col-12 col-sm-6">
+        <div class="list-group-item-text">
+      <div *ngIf="task.status!='Completed' ">
+        <button class="btn btn-sm btn-primary" (click)="editTask(task.taskId)">Edit</button>
+        | <button class="btn btn-sm btn-danger" (click)="completeTask(task)">Complete</button>
+      </div>
+      </div>
+    </div>
+      <div class="alert alert-info alert-dismissible" *ngIf="iscompleteTask">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ task.taskName }} is completed.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="modal fade" id="SucessMessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Complete Task</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ successMessage }}
+        </div>
+        <div class="modal-footer">        
+          <button type="button" class="btn btn-primary" (click)="closeSuccessModal()">Okay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<div class="modal fade" id="showProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Select Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="projectList">
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search...">
+          </div>
+        </div>
+        <br />
+        <table class="table table-responsive">
+          <thead>
+            <tr>
+              <th>Project Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of projectList | filter: searchText">
+              <td>{{ project.projectName }}</td>              
+              <td>
+                <button type="button" class="btn btn-link btn-sm" (click)="selectProject(project)">Select</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="alert alert-success" *ngIf="isProjectSelected">
+         Project is selected, This dialog will auto close.
+      </div>
+      </div>
+     <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updateContact()" >UpdateContact</button>
+      </div>  -->
+    </div>
+  </div>
+</div>

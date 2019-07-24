@@ -1,0 +1,94 @@
+<form class="text-left" [formGroup] = "userForm" (ngSubmit)="newUserFormHandler(userForm)" >
+    <div class="form-group row">
+      <label for="firstNameInput" class="col-sm-2 col-form-label">First Name :</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="firstNameInput" placeholder="First Name" required formControlName="firstName"
+        name ="firstName"  >
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="lastNameInput" class="col-sm-2 col-form-label">Last Name</label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="lastNameInput" placeholder="Last Name" required formControlName="lastName"
+        name ="lastName" > 
+      </div>
+    </div>
+    <div class="form-group row">
+        <label for="employeeIdInput" class="col-sm-2 col-form-label">Employee Id</label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" id="employeeIdInput" required formControlName="employeId"
+          name ="employeId" placeholder="Employee Id" >
+        </div>
+   </div>
+    <div class="form-group row">
+        <div class="col-sm-1">
+          <button type="submit" [disabled] = "!userForm.valid" class="btn btn-primary">{{buttonText}}</button>          
+      </div>
+      <div class="col-sm-1">
+          <button type="submit" class="btn btn-primary">Reset</button>          
+      </div>
+       
+
+      </div>
+    </form>
+   <!-- <div class="alert alert-success" *ngIf="isSucess">
+        New user saved sucessfully.
+    </div>
+    <div class="alert alert-success" *ngIf="isUpdated">
+        User updated sucessfully.
+    </div>
+    <div class="alert alert-success" *ngIf="isDeleted">
+        User Deleted sucessfully.
+    </div>
+    -->
+<hr/>
+
+
+<div class="row">
+    <div class="col-12 col-sm-4">
+      <input class="form-control" type="text" [(ngModel)]="searchText" placeholder="Search...">
+    </div>
+    <div class="col-12 col-sm-8">
+      <label>Sort by:</label>
+      <button type="button" class="btn btn-link" (click)="sortBy('firstName')">First Name</button>
+      |<button type="button" class="btn btn-link" (click)="sortBy('lastName')">Last Name</button>
+      |<button type="button" class="btn btn-link" (click)="sortBy('userId')">User Id</button>
+    </div>
+  </div>
+<br />
+  <div *ngIf="userList && userList.length>0">
+<div class="card col-sm-4"  *ngFor="let user of userList | filter: searchText | orderby: field : order">
+  <div class="card-body">
+    <!--<h5 class="card-title"><a routerLink="/contacts/{{ contact.id }}">{{ contact.name }}</a></h5> -->
+    <div class="btn-group-vertical float-right ">
+        <a href="#" class="btn btn-primary" (click)="editUserHandler(user.userId)">Edit</a> 
+            
+        <p></p>
+        <a href="#" class="btn btn-danger" (click)="deleteUserHandler(user.userId)">Delete</a> 
+     </div>
+    <h5 class="card-text">{{ user.firstName }}</h5>
+    <p class="card-text">{{ user.lastName }}</p>  
+    <p class="card-text">{{ user.employeId }}</p> 
+  
+  </div>  
+</div>
+</div>
+
+<div class="modal fade" id="SucessMessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">User</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ successMessage }}
+        </div>
+        <div class="modal-footer">        
+          <button type="button" class="btn btn-primary" (click)="closeSuccessModal()">Okay</button>
+        </div>
+      </div>
+    </div>
+  </div>

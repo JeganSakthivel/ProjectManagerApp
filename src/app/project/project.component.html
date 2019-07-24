@@ -1,0 +1,209 @@
+<form class="text-left" [formGroup] = "projectForm" (ngSubmit)="newprojectFormHandler(projectForm)" >
+  <div class="form-group row">
+    <label for="projectNameInput" class="col-sm-2 col-form-label">Project :</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" id="projectNameInput" placeholder="Project" required formControlName="projectName"
+      name ="projectName"  >
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-12 col-sm-2 control-label">Set Start Date</label>
+    <div class="col-12 col-sm-4">
+      <input type="checkbox" class="checkbox" formControlName="DateRequired" (change)="toggleDate()">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-12 col-sm-2 control-label">Start Date</label>
+    <div class="col-12 col-sm-4">
+      <input type="date" class="form-control" formControlName="startDate">
+    </div>
+    <div *ngIf="submitted && startDateRequired" class="col-12 col-sm-4 text-danger small">
+      Start date is required
+    </div>
+    <div *ngIf="submitted && startDateGreater" class="col-12 col-sm-4 text-danger small">
+      Start date is greater than end date
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-12 col-sm-2 control-label">End Date</label>
+    <div class="col-12 col-sm-4">
+      <input type="date" class="form-control" formControlName="endDate">
+    </div>
+    <div *ngIf="submitted && endDateRequired" class="col-12 col-sm-4 text-danger small">
+      End date is required
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-12 col-sm-2 control-label">Priority</label>
+    <div class="col-12 col-sm-4">
+      <input type="range" min="0" max="30" step="1" class="form-control" [(ngModel)]="priority" formControlName="priority" />
+    </div>
+    <div class="col-12 col-sm-5">  {{priority}} 
+      </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-12 col-sm-2 control-label">Manager</label>
+    <div class="col-12 col-sm-4 input-group">
+      <input type="text" class="form-control" formControlName="Manager" readonly  />     
+    </div>
+    <button type="button" class="col-sm-2 btn btn-info" (click)=searchUserPopup()>Search</button>
+  </div>
+  <div class="form-group row">
+     
+      <div class="col-sm-1">
+        <button type="submit" [disabled] = "!projectForm.valid" class="btn btn-primary">{{buttonText}}</button>          
+    </div>
+    <div class="col-sm-1">
+        <button type="submit" class="btn btn-primary" (click)=reset()>Reset</button>          
+    </div>
+ </div>
+</form>
+
+
+<hr/>
+
+<!-- Modal -->
+<div class="modal fade" id="SucessMessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{ successMessage }}
+        </div>
+        <div class="modal-footer">        
+          <button type="button" class="btn btn-primary" (click)="closeSuccessModal()">Okay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="row">
+    <div class="col-12 col-sm-4">
+      <input class="form-control" type="text" [(ngModel)]="searchText" placeholder="Search...">
+    </div>
+    <div class="col-12 col-sm-8">
+      <label>Sort by:</label>
+      <button type="button" class="btn btn-link" (click)="sortBy('startDate')">Start Date</button>
+      |<button type="button" class="btn btn-link" (click)="sortBy('endDate')">End Date</button>
+      |<button type="button" class="btn btn-link" (click)="sortBy('priority')">Priority</button>
+      |<button type="button" class="btn btn-link" (click)="sortBy('taskCount')">Completed</button>
+    </div>
+  </div>
+  <br />
+<div class="list-group" *ngFor="let proj of projectsList | filter: searchText | orderby: field : order">
+  <div class="list-group-item">
+    <div class="row">
+      <div class="col-12 col-sm-6">
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Project: </label> {{ proj.projectName }}
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Priority: </label> {{ proj.priority }}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Start Date: </label> {{ proj.startDate | date: "dd-MM-yyyy" }}
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>End Date: </label> {{ proj.endDate | date: "dd-MM-yyyy" }}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Task Count: </label> {{ proj.taskCount }}
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <div class="list-group-item-text">
+              <label>Status: </label> {{ proj.status }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-12 col-sm-6">
+           <!-- <div class="list-group-item-text">
+          <button type="submit" class="btn btn-primary" (click)="editProject(proj.projectId)">Update</button>
+          </div>
+          <div class="list-group-item-text">
+          |<button type="submit" class="btn btn-danger" (click)="suspendProject(proj.projectId)">Suspend</button>
+        </div> -->
+      <div class="form-group column">
+          <div class="col-sm-1">
+            <button type="submit"  class="btn btn-primary" (click)="editProject(proj.projectId)">Update</button>          
+        </div>
+          <br/>
+        <div class="col-sm-1">
+            <button type="submit" class="btn btn-danger"  (click)="suspendProject(proj.projectId)">Suspend</button>          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="showUsersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Select User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="userList">
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search...">
+          </div>
+        </div>
+        <br />
+        <table class="table table-responsive">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of userList | filter: searchText">
+              <td>{{ user.firstName }}</td>
+              <td>{{ user.lastName }}</td>
+              <td>
+                <button type="button" class="btn btn-link btn-sm" (click)="selectUser(user)">Select</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="alert alert-success" *ngIf="isManagerSelected">
+         Manager is selected, This dialog will auto close.
+      </div>
+      </div>
+     <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updateContact()" >UpdateContact</button>
+      </div>  -->
+    </div>
+  </div>
+</div>
+
+
