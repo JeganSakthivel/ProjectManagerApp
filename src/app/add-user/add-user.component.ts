@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { User } from 'src/app/Model/user.model';
-import { Router } from '@angular/router';
+
 
 declare var $: any; 
 
@@ -11,7 +11,10 @@ declare var $: any;
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.css']
 })
+
 export class AddUserComponent implements OnInit {
+
+  constructor(private userService : UserService) { }
 
   isDeleted : boolean = false;
   userForm: FormGroup;
@@ -26,12 +29,12 @@ export class AddUserComponent implements OnInit {
   searchText: string;
   error : String;
 
-  constructor(private userService : UserService,private router: Router) { }
+ 
 
   ngOnInit() {
-    this.initialiseFormData();
     this.readAll();
-    this.userObject = new User();
+    this.initialiseFormData();    
+    //this.userObject = new User();
     this.order = 1;  
   }
 
@@ -61,7 +64,8 @@ export class AddUserComponent implements OnInit {
             );
   }
 
-  resetForm(){    
+  resetForm(){ 
+    this.userObject = new User();   
     this.searchText = "";
     this.field = "";
     this.order = 1;
@@ -78,8 +82,11 @@ export class AddUserComponent implements OnInit {
     if (this.userForm.invalid) {
       return;
     }
-    
-      this.userService.create(this.userForm.value)
+    this.userObject.firstName = this.userForm.get('firstName').value;
+    this.userObject.lastName = this.userForm.get('lastName').value;
+    this.userObject.employeId = this.userForm.get('employeId').value;
+
+      this.userService.create(this.userObject)
       .subscribe(  (savedUserDetail : any) => {
           console.log(savedUserDetail);
           if(savedUserDetail && savedUserDetail.userId) {
@@ -89,7 +96,7 @@ export class AddUserComponent implements OnInit {
               this.isSaved = true;
             }
               this.readAll();
-              this.resetForm();
+              
           } else {
             this.isSaved = false;
             this.isUpdate = false;
@@ -107,6 +114,7 @@ export class AddUserComponent implements OnInit {
           } else if ( this.isDeleted == true){
             this.successMessage = 'User deleted Successfully'; 
           }
+          this.resetForm();
         }
         
       );
@@ -119,28 +127,28 @@ export class AddUserComponent implements OnInit {
       this.isDeleted=false;
     }
 
-  editUserHandler(userId : number){
-    console.log("inside edit user handler "+ userId);
+  editUserHandler(user : User){
+    console.log("inside edit user handler ");
       this.buttonText = "Update"
-     
-      this.userService.getUserById(userId).subscribe (
+      this.userObject = user;
+       this.userForm.patchValue({
+              firstName: user.firstName,
+              lastName: user.lastName,
+              employeId: user.employeId,
+              userId: user.userId              
+            });
+
+      /*this.userService.getUserById(userId).subscribe (
           
           (response : any) => {
             console.log("Edit get User Detail" + response)
             this.userObject = response;
-            this.userForm.patchValue({
-              firstName: this.userObject.firstName,
-              lastName: this.userObject.lastName,
-              employeId: this.userObject.employeId,
-              userId: this.userObject.userId              
-            });
-            
-            this.readAll();
+           // this.readAll();
             
           },
           err => console.log('HTTP Error', err),
           () => console.log('HTTP request completed.')
-      ); 
+      ); */
 
   }
 
@@ -148,9 +156,12 @@ export class AddUserComponent implements OnInit {
     this.userService.delete(id)
         .subscribe( 
           (status)=> {
+            console.log(status);
+            if(status==200){
               console.log(status);
               this.isDeleted = true;
               this.readAll();
+            }
         },
         error => {
           this.error = "Error while saving the project";
@@ -159,6 +170,7 @@ export class AddUserComponent implements OnInit {
             $("#SucessMessageModal").modal('show');
             if ( this.isDeleted == true){
               this.successMessage = 'User deleted Successfully'; 
+              
             }
           }
         

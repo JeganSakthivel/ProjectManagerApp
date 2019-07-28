@@ -61,10 +61,10 @@
   <div class="card-body">
     <!--<h5 class="card-title"><a routerLink="/contacts/{{ contact.id }}">{{ contact.name }}</a></h5> -->
     <div class="btn-group-vertical float-right ">
-        <a href="#" class="btn btn-primary" (click)="editUserHandler(user.userId)">Edit</a> 
+      <button type="submit"  class="btn btn-primary" (click)="editUserHandler(user)">Edit</button> 
             
         <p></p>
-        <a href="#" class="btn btn-danger" (click)="deleteUserHandler(user.userId)">Delete</a> 
+        <button type="submit"  class="btn btn-primary" (click)="deleteUserHandler(user.userId)">Delete</button>
      </div>
     <h5 class="card-text">{{ user.firstName }}</h5>
     <p class="card-text">{{ user.lastName }}</p>  

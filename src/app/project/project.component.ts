@@ -13,6 +13,7 @@ declare var $: any;
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css']
 })
+
 export class ProjectComponent implements OnInit {
 
   constructor(private projectService:ProjectService, private userService: UserService) { }
@@ -146,6 +147,7 @@ export class ProjectComponent implements OnInit {
     this.project.projectName = this.projectForm.get('projectName').value;
     this.project.managerId = this.managerId;
     this.project.priority = this.projectForm.get('priority').value;
+    this.project.status = "In-Progress";
 
     let dateRequired = this.projectForm.controls['DateRequired'].value;
     let startDate = this.projectForm.get('startDate').value
@@ -266,7 +268,8 @@ export class ProjectComponent implements OnInit {
 
   setTimeout(()=>{
     $("#showUsersModal").modal('hide');
-  },1000);
+    this.isManagerSelected=false;
+  },8000);
 }
 
 editProject(id: number) {

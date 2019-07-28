@@ -75,6 +75,7 @@ export class ViewtaskComponent implements OnInit {
 
   setTimeout(()=>{
     $("#showProjectModal").modal('hide');
+    this.isProjectSelected=false;
   },1000);
 }
 
@@ -84,9 +85,14 @@ completeTask(task: Task) {
 
     if (result) {
       // reload the table
-      this.getTasks();
-      this.successMessage = task.taskName + "is completed" ;
-      $("#SucessMessageModal").modal('show');
+      this.taskService.getTasksByProjectId(this.projectId).subscribe(result => {
+        this.Tasks = result
+        this.successMessage = task.taskName + "is completed" ;
+        $("#SucessMessageModal").modal('show');
+      },
+      error => console.error(error)
+    );
+     
     }
     else {
       this.error = "Error while saving the task";
