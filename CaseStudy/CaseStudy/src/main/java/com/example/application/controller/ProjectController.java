@@ -47,6 +47,7 @@ public class ProjectController {
 		
 		List<UserEntity> userList = new ArrayList<UserEntity>();
 		userRepo.findAll().forEach(userList::add);
+		System.out.println("Getting data from DB : " + userList);
 		return userList;
 		
 	}	
@@ -54,7 +55,8 @@ public class ProjectController {
 	@GetMapping("/users/{id}")
 	public UserEntity getUsersById(@PathVariable("id") int id){
 		
-		UserEntity userList = userRepo.findByUserId(id);		
+		UserEntity userList = userRepo.findByUserId(id);	
+		System.out.println("Getting getUsersById from DB : " + userList);
 		return userList;
 		
 	}
@@ -65,6 +67,7 @@ public class ProjectController {
 	public UserEntity postUser(@RequestBody UserEntity user) {
 		
 		UserEntity savedUser = userRepo.save(user);
+		System.out.println("posting data into DB : " + user);
 		return savedUser;
 	}
 	
@@ -75,7 +78,7 @@ public class ProjectController {
 	 * (userEnt != null) { savedUser = repo.save(user); } return savedUser; }
 	 */
 	
-	 @PutMapping(value="/users/update/{id}")
+	 /*@PutMapping(value="/users/update/{id}")
 	 public UserEntity updateUser(@PathVariable("id") int id,@RequestBody UserEntity userDetail) {
 		
 		UserEntity user = userRepo.findByUserId(id);
@@ -84,7 +87,7 @@ public class ProjectController {
 		user.setEmployeId(userDetail.getEmployeId());
 		UserEntity updatedUser = userRepo.save(user); 
 		return updatedUser;
-	 }
+	 }*/
 	 
 	
 	@DeleteMapping("/users/delete/{id}")
@@ -104,9 +107,7 @@ public class ProjectController {
 			projectEntity.setTaskCount(taskRepo.getTotalTasksForProjectId(projectEntity.getProjectId()));
 		}
 		
-		
-		return projectList;
-		
+		return projectList;	
 	}
 	
 	@GetMapping("/projects/{id}")
@@ -120,23 +121,25 @@ public class ProjectController {
 	@PostMapping(value="/projects/add")
 	public ProjectEntity postProject(@RequestBody ProjectEntity project) {
 		
-		ProjectEntity savedProject = projectRepo.save(project);			
+		ProjectEntity savedProject = projectRepo.save(project);	
+		System.out.println("posting data into DB : " + project);
 		return savedProject;
 	}
 	
-	@DeleteMapping("/projects/delete/{id}")
+	/*@DeleteMapping("/projects/delete/{id}")
 	  public ResponseEntity<String> deleteProject(@PathVariable("id") int id) {
 	    
 		projectRepo.delete(id);
 	 
 	    return new ResponseEntity<>("Project has been deleted!", HttpStatus.OK);
-	  }
+	  }*/
 	
 	@GetMapping("/parentTasks")
 	public List<ParentTaskEntity> getAllParentTasks(){
 		
 		List<ParentTaskEntity> parentTaskList = new ArrayList<ParentTaskEntity>();
 		parentTaskRepo.findAll().forEach(parentTaskList::add);
+		System.out.println("Getting data from DB : " + parentTaskList);
 		return parentTaskList;
 		
 	}
@@ -151,7 +154,8 @@ public class ProjectController {
 	@PostMapping(value="/parentTasks/add")
 	public ParentTaskEntity postParentTask(@RequestBody ParentTaskEntity parentTask) {
 		
-		ParentTaskEntity savedParentTask = parentTaskRepo.save(parentTask);			
+		ParentTaskEntity savedParentTask = parentTaskRepo.save(parentTask);	
+		System.out.println("posting data into DB : " + parentTask);
 		return savedParentTask;
 	}
 	
@@ -160,6 +164,7 @@ public class ProjectController {
 		
 		List<TaskEntity> taskList = new ArrayList<TaskEntity>();
 		taskRepo.findAll().forEach(taskList::add);
+		System.out.println("Getting data from DB : " + taskList);
 		return taskList;
 		
 	}
@@ -174,7 +179,8 @@ public class ProjectController {
 	@PostMapping(value="/tasks/add")
 	public TaskEntity postTask(@RequestBody TaskEntity task) {
 		
-		TaskEntity savedTask = taskRepo.save(task);			
+		TaskEntity savedTask = taskRepo.save(task);		
+		System.out.println("posting data into DB : " + task);
 		return savedTask;
 	}
 	
